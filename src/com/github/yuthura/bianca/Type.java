@@ -71,7 +71,7 @@ public interface Type<T> {
 		@Override
 		public Partial asPartial(final T object) {
 			if(object == null) {
-				throw new NullPointerException();
+				return Partial.NULL;
 			}
 
 			return new Partial() {
