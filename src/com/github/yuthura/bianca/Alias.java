@@ -31,10 +31,20 @@ public interface Alias extends Selectable {
 		}
 
 		@Override
-		public void buildStatement(StringBuilder sb) {
-			getOriginal().buildStatement(sb);
+		public void buildSelectionStatement(StringBuilder sb) {
+			getOriginal().buildSelectionStatement(sb);
 			sb.append(" AS ");
 			quote(sb, getName());
+		}
+
+		@Override
+		public void buildStatement(StringBuilder sb) {
+			quote(sb, getName());
+		}
+
+		@Override
+		public int prepareSelectionStatement(PreparedStatement statement, int index) throws SQLException {
+			return getOriginal().prepareSelectionStatement(statement, index);
 		}
 
 		@Override

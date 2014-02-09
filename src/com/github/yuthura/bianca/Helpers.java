@@ -90,4 +90,8 @@ public class Helpers {
 	public static Sum sum(Object object) {
 		return new Sum(object);
 	}
+
+	public static Year year(Object object) {
+		return new Year(object);
+	}
 }
