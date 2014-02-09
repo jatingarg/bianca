@@ -113,4 +113,14 @@ public class DelegatedSelect implements SelectQuery {
 		return target.getOrderBy();
 	}
 
+	@Override
+	public GroupBy getGroupBy() {
+		return target.getGroupBy();
+	}
+
+	@Override
+	public void setGroupBy(GroupBy groupBy) {
+		target.setGroupBy(groupBy);
+	}
+
 }

@@ -45,6 +45,19 @@ public interface SelectChain extends SelectQuery {
 		return this;
 	}
 
+
+	default
+	public SelectChain groupBy(Partial... groupings) {
+		GroupBy groupBy = getGroupBy(true);
+		for(Partial grouping : groupings) {
+			groupBy.addGrouping(grouping);
+		}
+
+		return this;
+	}
+
+
+
 	default
 	public SelectChain orderBy(Partial partial, OrderBy.Direction direction) {
 		getOrderBy(true).addOrdering(partial, direction);

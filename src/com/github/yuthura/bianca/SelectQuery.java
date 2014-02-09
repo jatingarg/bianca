@@ -44,6 +44,22 @@ public interface SelectQuery extends Partial {
 
 
 	default
+	public GroupBy getGroupBy(boolean ensure) {
+		GroupBy groupBy = getGroupBy();
+		if(groupBy == null && ensure) {
+			groupBy = new GroupBy();
+			setGroupBy(groupBy);
+		}
+
+		return groupBy;
+	}
+
+	public GroupBy getGroupBy();
+
+	public void setGroupBy(GroupBy groupBy);
+
+
+	default
 	public OrderBy getOrderBy(boolean ensure) {
 		OrderBy orderBy = getOrderBy();
 		if(orderBy == null && ensure) {

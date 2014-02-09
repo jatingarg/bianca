@@ -13,6 +13,8 @@ public class Select implements SelectChain {
 
 	private Where where;
 
+	private GroupBy groupBy;
+
 	private OrderBy orderBy;
 
 	private Limit limit;
@@ -83,6 +85,17 @@ public class Select implements SelectChain {
 
 
 	@Override
+	public GroupBy getGroupBy() {
+		return groupBy;
+	}
+
+	@Override
+	public void setGroupBy(GroupBy groupBy) {
+		this.groupBy = groupBy;
+	}
+
+
+	@Override
 	public OrderBy getOrderBy() {
 		return orderBy;
 	}
@@ -135,6 +148,10 @@ public class Select implements SelectChain {
 			where.buildStatement(sb);
 		}
 
+		if(groupBy != null) {
+			groupBy.buildStatement(sb);
+		}
+
 		if(orderBy != null) {
 			orderBy.buildStatement(sb);
 		}
@@ -160,6 +177,10 @@ public class Select implements SelectChain {
 
 		if(where != null) {
 			i += where.prepareStatement(statement, index + i);
+		}
+
+		if(groupBy != null) {
+			i += groupBy.prepareStatement(statement, index + i);
 		}
 
 		if(orderBy != null) {
