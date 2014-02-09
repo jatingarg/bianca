@@ -8,6 +8,12 @@ public class Helpers {
 		return new Select(selection);
 	}
 
+	public static InsertChain insert(Table table, Column<?>... columns) {
+		Insert insert = new Insert(table);
+		insert.setColumns(columns);
+		return insert;
+	}
+
 
 	public static And and(Object... partials) {
 		return new And(partials);

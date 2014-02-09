@@ -1,6 +1,13 @@
 package com.github.yuthura.bianca;
 
-public class Query {
+import java.sql.*;
+
+public interface Query {
+	public void buildStatement(StringBuilder sb);
+
+	public int prepareStatement(PreparedStatement statement, int index) throws SQLException;
+
+
 	public static String requireValidName(String value) {
 		if(value == null) {
 			throw new NullPointerException();
@@ -15,5 +22,9 @@ public class Query {
 		}
 
 		return value;
+	}
+
+	public static void log(Object msg) {
+		System.out.println("INFO : " + String.valueOf(msg));
 	}
 }

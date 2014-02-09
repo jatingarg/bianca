@@ -62,7 +62,7 @@ public class ExecutableSelect extends DelegatedSelect {
 		StringBuilder sql = new StringBuilder();
 		buildStatement(sql);
 
-		SelectQuery.log(sql);
+		Query.log(sql);
 
 		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString())) {
 			prepareStatement(statement, 1);

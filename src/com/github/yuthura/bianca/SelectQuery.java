@@ -5,7 +5,7 @@ import java.util.function.*;
 
 import com.github.yuthura.bianca.impl.*;
 
-public interface SelectQuery extends Partial {
+public interface SelectQuery extends Query, Partial {
 	public List<Selectable> getSelection();
 
 	public void setSelection(Selectable... selection);
@@ -125,10 +125,5 @@ public interface SelectQuery extends Partial {
 	default
 	public SelectQuery with(ConnectionFactory connectionFactory) {
 		return new ExecutableSelect(this, connectionFactory);
-	}
-
-
-	public static void log(Object msg) {
-		System.out.println("INFO : " + String.valueOf(msg));
 	}
 }
