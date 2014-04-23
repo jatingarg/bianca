@@ -14,6 +14,10 @@ public class Helpers {
 		return insert;
 	}
 
+	public static UpdateChain update(Table table) {
+		return new Update(table);
+	}
+
 
 	public static And and(Object... partials) {
 		return new And(partials);
