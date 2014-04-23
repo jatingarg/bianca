@@ -18,6 +18,9 @@ public class Helpers {
 		return new Update(table);
 	}
 
+	public static DeleteChain delete(Table table, Condition... conditions) {
+		return new Delete(table).where(conditions);
+	}
 
 	public static And and(Object... partials) {
 		return new And(partials);
