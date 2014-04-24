@@ -35,7 +35,7 @@ public class DelegatedInsert implements InsertQuery {
 	}
 
 	@Override
-	public void setSelect(SelectQuery select) {
+	public void setSelect(Select select) {
 		target.setSelect(select);
 	}
 

@@ -1,4 +1,4 @@
-package com.github.yuthura.bianca.impl;
+package com.github.yuthura.bianca;
 
 import java.sql.*;
 

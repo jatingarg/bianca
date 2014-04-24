@@ -12,7 +12,7 @@ public interface InsertQuery extends Query {
 
 	public void addValues(Object... values);
 
-	public void setSelect(SelectQuery select);
+	public void setSelect(Select select);
 
 
 	public int run();

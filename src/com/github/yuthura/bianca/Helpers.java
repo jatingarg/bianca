@@ -4,7 +4,7 @@ import com.github.yuthura.bianca.conditions.*;
 import com.github.yuthura.bianca.functions.*;
 
 public class Helpers {
-	public static SelectChain select(Selectable... selection) {
+	public static Select select(Selectable... selection) {
 		return new Select(selection);
 	}
 

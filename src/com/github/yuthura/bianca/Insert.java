@@ -10,7 +10,7 @@ public class Insert implements InsertChain {
 
 	private final List<List<Partial>> values;
 
-	private SelectQuery select;
+	private Select select;
 
 	public Insert(Table into) {
 		super();
@@ -46,7 +46,7 @@ public class Insert implements InsertChain {
 
 
 	@Override
-	public void setSelect(SelectQuery select) {
+	public void setSelect(Select select) {
 		if(!values.isEmpty()) {
 			throw new IllegalStateException();
 		}
