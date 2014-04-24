@@ -107,4 +107,8 @@ public class Helpers {
 	public static Year year(Object object) {
 		return new Year(object);
 	}
+
+	public static Count count(Object object) {
+		return new Count(object);
+	}
 }
