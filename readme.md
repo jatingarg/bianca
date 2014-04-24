@@ -168,4 +168,3 @@ Because Bianca is still in a stage of concept and development, some restrictions
 1. MySQL syntax only (however, you can subclass almost everything you need for other drivers)
 2. No automatic binding to business logic models
 3. Recompilation needed when renaming tables or columns
-4. Only select queries available now (insert, update and delete will be added in future releases)
