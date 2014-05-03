@@ -111,4 +111,8 @@ public class Helpers {
 	public static Count count(Object object) {
 		return new Count(object);
 	}
+
+	public static Now now() {
+		return new Now();
+	}
 }
