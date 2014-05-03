@@ -8,10 +8,8 @@ public class Helpers {
 		return new Select(selection);
 	}
 
-	public static InsertChain insert(Table table, Column<?>... columns) {
-		Insert insert = new Insert(table);
-		insert.setColumns(columns);
-		return insert;
+	public static Insert insert(Table table, Column<?>... columns) {
+		return new Insert(table, columns);
 	}
 
 	public static UpdateChain update(Table table) {

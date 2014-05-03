@@ -3,7 +3,12 @@ package com.github.yuthura.bianca;
 import java.sql.*;
 import java.util.*;
 
-public class Insert implements InsertChain {
+/**
+ * INSERT INTO {table} (column) VALUES (value), (value)
+ *	INSERT INTO table SET column=value, column=value
+ * INSERT INTO table1 (col_name) SELECT * FROM table2
+ */
+public class Insert implements Query {
 	private final Table into;
 
 	private final List<Column<?>> columns;
@@ -20,18 +25,21 @@ public class Insert implements InsertChain {
 		values = new ArrayList<>();
 	}
 
+	public Insert(Table into, Column<?>... columns) {
+		this(into);
 
-	@Override
-	public void setColumns(Column<?>... columns) {
-		this.columns.clear();
-		for(Column<?> column : columns) {
-			this.columns.add(Objects.requireNonNull(column));
-		}
+		columns(columns);
 	}
 
 
-	@Override
-	public void addValues(Object... values) {
+	public Insert columns(Column<?>... columns) {
+		for(Column<?> column : columns) {
+			this.columns.add(Objects.requireNonNull(column));
+		}
+		return this;
+	}
+
+	public Insert values(Object... values) {
 		if(select != null) {
 			throw new IllegalStateException();
 		}
@@ -42,27 +50,44 @@ public class Insert implements InsertChain {
 		}
 
 		this.values.add(list);
+		return this;
 	}
 
-
-	@Override
-	public void setSelect(Select select) {
+	public Insert select(Select select) {
 		if(!values.isEmpty()) {
 			throw new IllegalStateException();
 		}
 
 		this.select = select;
+		return this;
 	}
 
 
-
-	@Override
-	public int run() {
-		throw new UnsupportedOperationException();
+	// TODO: handle generated keys
+	public int run(ConnectionFactory connectionFactory) {
+		return runQuery(connectionFactory, results -> { });
 	}
 
+	protected int runQuery(ConnectionFactory connectionFactory, ResultSetHandler consumer) {
+		StringBuilder sql = new StringBuilder();
+		buildStatement(sql);
 
+		Query.log(sql);
 
+		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+			prepareStatement(statement, 1);
+			int count = statement.executeUpdate();
+			if(count > 0) {
+				try(ResultSet results = statement.getResultSet()) {
+					consumer.handle(results);
+				}
+			}
+
+			return count;
+		} catch(SQLException x) {
+			throw new QueryException(x);
+		}
+	}
 
 	@Override
 	public void buildStatement(StringBuilder sb) {
