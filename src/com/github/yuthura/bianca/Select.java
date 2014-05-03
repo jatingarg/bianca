@@ -4,40 +4,49 @@ import java.sql.*;
 import java.util.*;
 import java.util.function.*;
 
+/**
+ * Constructs a SELECT query from chained method calls. When done building the statement,
+ * call one of <code>forEach</code>, <code>forFirst</code>, <code>mapEach</code> or <code>mapFirst</code>
+ * and pass in a {@link ConnectionFactory} to handle or map the result set.
+ *
+ * <pre>
+ * {@code
+ * Select sql = new Select();
+ * sql.select( Products.id, Products.name, Products.price );
+ * sql.from( Products.table );
+ * sql.where( gt(Products.price, 10.0) );
+ * sql.ascendBy( Products.price );
+ * sql.limit( 30 * (page - 1), 30 ); // 30 per page pagination
+ *
+ * // you will generally want to perform this somewhere central to your application
+ * ConnectionFactory cf = new JDBCConnectionFactory("database", "username", "password");
+ *
+ * List<Product> products = sql.mapEach(cf, new ArrayList<Product>(30), result -> {
+ * 	Product p = new Product();
+ * 	p.setId( r.get(Products.id) ); // automatic type conversion
+ * 	p.setName( r.get(Products.name) );
+ * 	p.setPrice( r.get(Products.price) );
+ *
+ * 	return p;
+ * });
+ * }
+ * </pre>
+ *
+ * @author Yuthura
+ */
 public class Select implements Query, Partial {
-	/**
-	 * Holds the list of {@link Selectable} elements for the SELECT clause.
-	 */
 	private final List<Selectable> selection;
 
-	/**
-	 * Holds the {@link Table} for the FROM clause.
-	 */
 	private Table from;
 
-	/**
-	 * Holds the list of {@link Join} elements for any JOIN clauses.
-	 */
 	private final List<Join> joins;
 
-	/**
-	 * Holds the {@link Where} for the WHERE clause.
-	 */
 	private Where where;
 
-	/**
-	 * Holds the {@link GroupBy} for the GROUP BY clause.
-	 */
 	private GroupBy groupBy;
 
-	/**
-	 * Holds the {@link OrderBy} for the ORDER BY clause.
-	 */
 	private OrderBy orderBy;
 
-	/**
-	 * Holds the {@link Limit} for the LIMIT clause.
-	 */
 	private Limit limit;
 
 
@@ -100,22 +109,24 @@ public class Select implements Query, Partial {
 
 
 	/**
-	 * TODO
+	 * Alias for {@link #innerJoin(Table, Condition...)}; adds an INNER JOIN clause to the statement.
 	 *
-	 * @param table
-	 * @param conditions
-	 * @return
+	 * @param table the table to join on
+	 * @param conditions the conditions to join on
+	 * @return this
 	 */
 	public Select join(Table table, Condition... conditions) {
 		return innerJoin(table, conditions);
 	}
 
 	/**
-	 * TODO
+	 * Adds an INNER JOIN clause to the statement, based on the given {@link Table} and
+	 * the given {@link Condition}s. All {@link Join} clauses are concatenated to the final
+	 * statement in the order they are added to <code>this</code> select.
 	 *
-	 * @param table
-	 * @param conditions
-	 * @return
+	 * @param table the table to join on
+	 * @param conditions the conditions to join on
+	 * @return this
 	 */
 	public Select innerJoin(Table table, Condition... conditions) {
 		joins.add(new Join.Inner(table, conditions));
@@ -123,11 +134,13 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * TODO
+	 * Adds a LEFT OUTER JOIN clause to the statement, based on the given {@link Table} and
+	 * the given {@link Condition}s. All {@link Join} clauses are concatenated to the final
+	 * statement in the order they are added to <code>this</code> select.
 	 *
-	 * @param table
-	 * @param conditions
-	 * @return
+	 * @param table the tabel to join on
+	 * @param conditions the conditions to join on
+	 * @return this
 	 */
 	public Select leftJoin(Table table, Condition... conditions) {
 		joins.add(new Join.Left(table, conditions));
@@ -135,11 +148,13 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * TODO
+	 * Adds a RIGHT OUTER JOIN clause to the statement, based on the given {@link Table} and
+	 * the given {@link Condition}s. All {@link Join} clauses are concatenated to the final
+	 * statement in the order they are added to <code>this</code> select.
 	 *
-	 * @param table
-	 * @param conditions
-	 * @return
+	 * @param table the table to join on
+	 * @param conditions the conditions to join on
+	 * @return this
 	 */
 	public Select rightJoin(Table table, Condition... conditions) {
 		joins.add(new Join.Right(table, conditions));
@@ -148,10 +163,12 @@ public class Select implements Query, Partial {
 
 
 	/**
-	 * TODO
+	 * Adds a WHERE clause with the given {@link Condition}s to this statement if called for the first time
+	 * on <code>this</code> select. If called subsequent times, adds the given <code>Condition</code>s to
+	 * the existing {@link Where}.
 	 *
-	 * @param conditions
-	 * @return
+	 * @param conditions the conditions for the WHERE clause
+	 * @return this
 	 */
 	public Select where(Condition... conditions) {
 		if(where == null) {
@@ -164,10 +181,13 @@ public class Select implements Query, Partial {
 
 
 	/**
-	 * TODO
+	 * Adds a GROUP BY clause with the given {@link Partial}s to this statement if called for the first time
+	 * on <code>this</code> select. If called subsequent times, adds the given groupings to the
+	 * existing {@link GroupBy}. All given groupings are concatenated to the final statement
+	 * in the order they are added to <code>this</code> select.
 	 *
-	 * @param groupings
-	 * @return
+	 * @param groupings the partials to group on
+	 * @return this
 	 */
 	public Select groupBy(Partial... groupings) {
 		if(groupBy == null) {
@@ -182,11 +202,14 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * TODO
+	 * Adds an ORDER BY clause with the given {@link Partial} in the given {@link OrderBy.Direction} if called
+	 * for the first time. If called subsequent times, adds the given ordering to the existing {@link OrderBy}.
+	 * All order by calls are concatenated to the final statement in the order they are
+	 * added to <code>this</code> select.
 	 *
-	 * @param partial
-	 * @param direction
-	 * @return
+	 * @param partial the partial to order by
+	 * @param direction the direction to order in
+	 * @return this
 	 */
 	public Select orderBy(Partial partial, OrderBy.Direction direction) {
 		if(orderBy == null) {
@@ -198,30 +221,31 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * TODO
+	 * Alias for <code>orderBy(partial, null)</code>, a direction-less ordering (will
+	 * generally be forced to <code>ASC</code> by the database driver)
 	 *
-	 * @param partial
-	 * @return
+	 * @param partial the partial to order by
+	 * @return this
 	 */
 	public Select orderBy(Partial partial) {
 		return orderBy(partial, null);
 	}
 
 	/**
-	 * TODO
+	 * Alias for <code>orderBy(partial, OrderBy.Direction.ASCENDING).
 	 *
-	 * @param partial
-	 * @return
+	 * @param partial the partial to order by
+	 * @return this
 	 */
 	public Select ascendBy(Partial partial) {
 		return orderBy(partial, OrderBy.Direction.ASCENDING);
 	}
 
 	/**
-	 * TODO
+	 * Alias for <code>orderBy(partial, OrderBy.Direction.DESCENDING).
 	 *
-	 * @param partial
-	 * @return
+	 * @param partial the partial to order by
+	 * @return this
 	 */
 	public Select descendBy(Partial partial) {
 		return orderBy(partial, OrderBy.Direction.DESCENDING);
@@ -291,10 +315,14 @@ public class Select implements Query, Partial {
 
 
 	/**
-	 * TODO
+	 * Runs the SELECT statement as built so far and iterates over the resulting <code>ResultSet</code>, yielding
+	 * the <code>ResultSet</code> wrapped in a {@link Result} to the <code>consumer</code> each iteration.
+	 * Automatically closes the result set, the statement and the connection after all iterations are complete.
+	 * If any <code>SQLException</code> occurs during iteration, it is caught and rethrown wrapped in
+	 * a {@link QueryException}.
 	 *
-	 * @param connectionFactory
-	 * @param consumer
+	 * @param connectionFactory the connection factory that will provide the connection to run this query on
+	 * @param consumer the consumer that will handle the result
 	 */
 	public void forEach(ConnectionFactory connectionFactory, Consumer<Result> consumer) {
 		runQuery(connectionFactory, results -> {
@@ -306,12 +334,27 @@ public class Select implements Query, Partial {
 
 
 	/**
-	 * TODO
+	 * Runs the SELECT statement as built so far and iterates over the resulting <code>ResultSet</code>, yielding
+	 * the <code>ResultSet</code> wrapped in a {@link Result} to the <code>function</code> each iteration.
+	 * Automatically collects the return values from the <code>function</code> and places them in the given
+	 * <code>collection</code>. Automatically closes the result set, the statement and the connection after all
+	 * iterations are complete. If any <code>SQLException</code> occurs during iteration, it is caught and rethrown
+	 * wrapped in a {@link QueryException}.
 	 *
-	 * @param connectionFactory
-	 * @param collection
-	 * @param function
-	 * @return
+	 * This method is especially handy to fetch records from the database and then map them to a collection of a
+	 * business logic data type, like such:
+	 *
+	 * <pre>
+	 * {@code
+	 * List<Product> products = select(Products.table).limit(30)
+	 * 	.mapEach(connection, new ArrayList<>(30), result -> Products.fromResult(result));
+	 * }
+	 * </pre>
+	 *
+	 * @param connectionFactory the connection factory that will provide the connection to run this query on
+	 * @param collection the collection that will hold the return values of the function
+	 * @param function the function that will handle the result
+	 * @return the given collection
 	 */
 	public <T> Collection<T> mapEach(ConnectionFactory connectionFactory, Collection<T> collection, Function<Result, T> function) {
 		forEach(connectionFactory, result -> {
@@ -322,10 +365,11 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * TODO
+	 * Exactly the same as {@link #forEach(ConnectionFactory, Consumer)}, but forces a call to <code>limit(1)</code> and
+	 * instead of iterating over all results, forcefully only yields the first result.
 	 *
-	 * @param connectionFactory
-	 * @param consumer
+	 * @param connectionFactory the connection factory that will provide the connection to run this query on
+	 * @param consumer the consumer that will handle the result
 	 */
 	// TODO: force limit
 	public void forFirst(ConnectionFactory connectionFactory, Consumer<Result> consumer) {
@@ -339,11 +383,13 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * TODO
+	 * Exactly the same as {@link #mapEach(ConnectionFactory, Collection, Function)}, but uses
+	 * {@link #forFirst(ConnectionFactory, Consumer)} instead of {@link #forEach(ConnectionFactory, Consumer)},
+	 * and returns the first result found, instead of a collection.
 	 *
-	 * @param connectionFactory
-	 * @param function
-	 * @return
+	 * @param connectionFactory the connection factory that will provide the connection to run this query on
+	 * @param function the function that will handle the result
+	 * @return the first result found, or null if no results were found
 	 */
 	// TODO: force limit
 	public <T> T mapFirst(ConnectionFactory connectionFactory, Function<Result, T> function) {
@@ -377,6 +423,7 @@ public class Select implements Query, Partial {
 			throw new QueryException(x);
 		}
 	}
+
 
 
 
