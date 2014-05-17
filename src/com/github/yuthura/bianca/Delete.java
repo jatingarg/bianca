@@ -3,7 +3,10 @@ package com.github.yuthura.bianca;
 import java.sql.*;
 import java.util.*;
 
-public class Delete implements DeleteChain {
+/**
+ * DELETE table WHERE conditions ORDER BY column LIMIT 1
+ */
+public class Delete implements Query {
 	private final Table table;
 
 	private Where where;
@@ -14,20 +17,44 @@ public class Delete implements DeleteChain {
 		this.table = Objects.requireNonNull(table);
 	}
 
-	@Override
-	public Where getWhere() {
-		return where;
+
+
+	public Delete where(Condition... conditions) {
+		if(where == null) {
+			where = new Where();
+		}
+
+		where.setConditions(conditions);
+		return this;
 	}
 
-	@Override
-	public void setWhere(Where where) {
-		this.where = where;
+
+	public int run(ConnectionFactory connectionFactory) {
+		return runQuery(connectionFactory, results -> { });
 	}
 
-	@Override
-	public int run() {
-		throw new UnsupportedOperationException();
+
+	protected int runQuery(ConnectionFactory connectionFactory, ResultSetHandler consumer) {
+		StringBuilder sql = new StringBuilder();
+		buildStatement(sql);
+
+		Query.log(sql);
+
+		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+			prepareStatement(statement, 1);
+			int count = statement.executeUpdate();
+			if(count > 0) {
+				try(ResultSet results = statement.getResultSet()) {
+					consumer.handle(results);
+				}
+			}
+
+			return count;
+		} catch(SQLException x) {
+			throw new QueryException(x);
+		}
 	}
+
 
 	@Override
 	public void buildStatement(StringBuilder sb) {

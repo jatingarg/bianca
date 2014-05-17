@@ -16,7 +16,7 @@ public class Helpers {
 		return new Update(table);
 	}
 
-	public static DeleteChain delete(Table table, Condition... conditions) {
+	public static Delete delete(Table table, Condition... conditions) {
 		return new Delete(table).where(conditions);
 	}
 
