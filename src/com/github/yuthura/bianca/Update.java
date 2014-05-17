@@ -3,7 +3,10 @@ package com.github.yuthura.bianca;
 import java.sql.*;
 import java.util.*;
 
-public class Update implements UpdateChain {
+/**
+ * UPDATE table SET column=value, column=value WHERE conditions ORDER BY column LIMIT 1
+ */
+public class Update implements Query {
 	private final Table table;
 
 	private final Map<Column<?>, Partial> sets;
@@ -17,25 +20,53 @@ public class Update implements UpdateChain {
 		sets = new LinkedHashMap<>();
 	}
 
-	@Override
-	public void addSet(Column<?> column, Object value) {
+
+	public Update set(Column<?> column, Object value) {
 		sets.put(column, Partial.wrap(value));
+		return this;
 	}
 
-	@Override
-	public Where getWhere() {
-		return where;
+
+	public Update where(Condition... conditions) {
+		if(where == null) {
+			where = new Where();
+		}
+
+		where.addConditions(conditions);
+		return this;
 	}
 
-	@Override
-	public void setWhere(Where where) {
-		this.where = where;
+
+	public int run(ConnectionFactory connectionFactory) {
+		return runQuery(connectionFactory, results -> { });
 	}
 
-	@Override
-	public int run() {
-		throw new UnsupportedOperationException();
+
+	protected int runQuery(ConnectionFactory connectionFactory, ResultSetHandler consumer) {
+		StringBuilder sql = new StringBuilder();
+		buildStatement(sql);
+
+		Query.log(sql);
+
+		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+			prepareStatement(statement, 1);
+			int count = statement.executeUpdate();
+			if(count > 0) {
+				try(ResultSet results = statement.getResultSet()) {
+					consumer.handle(results);
+				}
+			}
+
+			return count;
+		} catch(SQLException x) {
+			throw new QueryException(x);
+		}
 	}
+
+
+
+
+
 
 	@Override
 	public void buildStatement(StringBuilder sb) {

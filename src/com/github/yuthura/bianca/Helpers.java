@@ -12,7 +12,7 @@ public class Helpers {
 		return new Insert(table, columns);
 	}
 
-	public static UpdateChain update(Table table) {
+	public static Update update(Table table) {
 		return new Update(table);
 	}
 
