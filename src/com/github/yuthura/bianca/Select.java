@@ -356,7 +356,7 @@ public class Select implements Query, Partial {
 	 * @param function the function that will handle the result
 	 * @return the given collection
 	 */
-	public <T> Collection<T> mapEach(ConnectionFactory connectionFactory, Collection<T> collection, Function<Result, T> function) {
+	public <T, C extends Collection<T>> C mapEach(ConnectionFactory connectionFactory, C collection, Function<Result, T> function) {
 		forEach(connectionFactory, result -> {
 			collection.add(function.apply(result));
 		});
@@ -401,6 +401,19 @@ public class Select implements Query, Partial {
 
 		return list.isEmpty() ? null : list.get(0);
 	}
+
+
+
+	public boolean isEmpty(ConnectionFactory connectionFactory) {
+		List<Integer> list = new ArrayList<>(1);
+
+		forFirst(connectionFactory, result -> {
+			list.add(Integer.valueOf(1));
+		});
+
+		return list.isEmpty();
+	}
+
 
 
 	/**
