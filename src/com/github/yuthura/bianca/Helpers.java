@@ -8,6 +8,10 @@ public class Helpers {
 		return new Select(selection);
 	}
 
+	public static Select select(Table table) {
+		return new Select().from(table);
+	}
+
 	public static Insert insert(Table table, Column<?>... columns) {
 		return new Insert(table, columns);
 	}
