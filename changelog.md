@@ -1,8 +1,3 @@
-### Release 0.2.0
-
-- Refactored implementation of queries; impl.* package is no longer available, nor is support for OO building of queries (e.g. `select.setWhere(new Where())`)
-- Added `now` function
-
 ### Release 0.1.0
 
 - Added support for select queries
@@ -18,3 +13,9 @@
 - Added `count` function
 - Added `year` function
 - Added `sum` function
+
+
+### Release 0.2.0
+
+- Refactored implementation of queries; impl.* package is no longer available, nor is support for OO building of queries (e.g. `select.setWhere(new Where())`)
+- Added `now` function
