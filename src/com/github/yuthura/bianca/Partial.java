@@ -22,6 +22,18 @@ public interface Partial {
 		}
 	};
 
+	public final Partial ALL = new Partial() {
+		@Override
+		public void buildStatement(StringBuilder sb) {
+			sb.append("*");
+		}
+
+		@Override
+		public int prepareStatement(PreparedStatement statement, int index) throws SQLException {
+			return 0;
+		}
+	};
+
 
 
 

@@ -61,6 +61,24 @@ public class Select implements Query, Partial {
 		joins = new ArrayList<>();
 	}
 
+	public Select(Select select) {
+		this();
+
+		selection.addAll(select.selection);
+		from = select.from;
+		joins.addAll(select.joins);
+		where = select.where;
+		groupBy = select.groupBy;
+		orderBy = select.orderBy;
+		limit = select.limit;
+	}
+
+
+	public PaginatedSelect paginate(int page, int per) {
+		return new PaginatedSelect(this, page, per);
+	}
+
+
 	/**
 	 * Constructs a new SELECT query with the given {@link Selectable} selection.
 	 *
@@ -71,6 +89,13 @@ public class Select implements Query, Partial {
 
 		select(selection);
 	}
+
+
+
+	protected List<Selectable> selection() {
+		return new ArrayList<Selectable>(selection);
+	}
+
 
 
 
@@ -326,8 +351,9 @@ public class Select implements Query, Partial {
 	 */
 	public void forEach(ConnectionFactory connectionFactory, Consumer<Result> consumer) {
 		runQuery(connectionFactory, results -> {
+			Result result = new Result(results);
 			while(results.next()) {
-				consumer.accept(new Result(results));
+				consumer.accept(result);
 			}
 		});
 	}
@@ -363,6 +389,25 @@ public class Select implements Query, Partial {
 
 		return collection;
 	}
+
+
+	/**
+	 * Same as {@link #mapEach(ConnectionFactory, Collection, Function)}, but a simple way to quickly map to a selected
+	 * column, similar to Rails' pluck method.
+	 *
+	 * @param connectionFactory
+	 * @param collection
+	 * @param column
+	 * @return
+	 */
+	public <T, C extends Collection<T>> C mapEach(ConnectionFactory connectionFactory, C collection, Column<T> column) {
+		return mapEach(connectionFactory, collection, result -> result.get(column));
+	}
+
+	public <T, C extends Collection<T>> C mapEach(ConnectionFactory connectionFactory, C collection, Selectable selectable, Type<T> type) {
+		return mapEach(connectionFactory, collection, result -> result.get(selectable, type));
+	}
+
 
 	/**
 	 * Exactly the same as {@link #forEach(ConnectionFactory, Consumer)}, but forces a call to <code>limit(1)</code> and
@@ -404,6 +449,15 @@ public class Select implements Query, Partial {
 
 
 
+	public <T> T mapFirst(ConnectionFactory connectionFactory, Column<T> column) {
+		return mapFirst(connectionFactory, result -> result.get(column));
+	}
+
+	public <T> T mapFirst(ConnectionFactory connectionFactory, Selectable selectable, Type<T> type) {
+		return mapFirst(connectionFactory, result -> result.get(selectable, type));
+	}
+
+
 	public boolean isEmpty(ConnectionFactory connectionFactory) {
 		List<Integer> list = new ArrayList<>(1);
 
@@ -415,12 +469,6 @@ public class Select implements Query, Partial {
 	}
 
 
-
-	/**
-	 * TODO
-	 *
-	 * @param consumer
-	 */
 	protected void runQuery(ConnectionFactory connectionFactory, ResultSetHandler consumer) {
 		StringBuilder sql = new StringBuilder();
 		buildStatement(sql);

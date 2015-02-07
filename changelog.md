@@ -20,3 +20,4 @@
 - Refactored implementation of queries; impl.* package is no longer available, nor is support for OO building of queries (e.g. `select.setWhere(new Where())`)
 - Added `now` function
 - Insert queries now return the generated keys of the type specified (or default to integers)
+- Added experimental support for simplified paginated select queries
