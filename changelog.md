@@ -21,3 +21,4 @@
 - Added `now` function
 - Insert queries now return the generated keys of the type specified (or default to integers)
 - Added experimental support for simplified paginated select queries
+- Added support for transactions
