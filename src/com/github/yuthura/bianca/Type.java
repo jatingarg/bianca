@@ -16,6 +16,8 @@ public interface Type<T> {
 
 	public Partial asPartial(T object);
 
+	public Class<T> getTypeClass();
+
 
 	public final static Type<String>          STRING = new StringType();
 	public final static Type<Boolean>        BOOLEAN = new BooleanType();

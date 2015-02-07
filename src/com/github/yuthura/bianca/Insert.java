@@ -63,27 +63,36 @@ public class Insert implements Query {
 	}
 
 
-	// TODO: handle generated keys
-	public int run(ConnectionFactory connectionFactory) {
-		return runQuery(connectionFactory, results -> { });
+
+	public Integer[] run(ConnectionFactory connectionFactory) {
+		return run(connectionFactory, Type.INTEGER);
 	}
 
-	protected int runQuery(ConnectionFactory connectionFactory, ResultSetHandler consumer) {
+	public <T> T[] run(ConnectionFactory connectionFactory, Type<T> generatedKeys) {
+		return runQuery(connectionFactory, generatedKeys);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> T[] runQuery(ConnectionFactory connectionFactory, Type<T> generatedKeys) {
 		StringBuilder sql = new StringBuilder();
 		buildStatement(sql);
 
 		Query.log(sql);
 
-		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS)) {
 			prepareStatement(statement, 1);
 			int count = statement.executeUpdate();
+			List<T> keys = new ArrayList<>();
 			if(count > 0) {
-				try(ResultSet results = statement.getResultSet()) {
-					consumer.handle(results);
+				try(ResultSet results = statement.getGeneratedKeys()) {
+					String column = results.getMetaData().getColumnLabel(1);
+					while(results.next()) {
+						keys.add(generatedKeys.get(results, column));
+					}
 				}
 			}
 
-			return count;
+			return keys.toArray((T[])java.lang.reflect.Array.newInstance(generatedKeys.getTypeClass(), keys.size()));
 		} catch(SQLException x) {
 			throw new QueryException(x);
 		}

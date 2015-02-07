@@ -9,6 +9,10 @@ import com.github.yuthura.bianca.*;
 public class DateTimeType extends AbstractType<LocalDateTime> {
 	private final static DateTimeFormatter LONG_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
+	public DateTimeType() {
+		super(LocalDateTime.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.DATE;

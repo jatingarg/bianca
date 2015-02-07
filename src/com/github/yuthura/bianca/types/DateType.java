@@ -7,6 +7,10 @@ import java.time.format.*;
 import com.github.yuthura.bianca.*;
 
 public class DateType extends AbstractType<LocalDate> {
+	public DateType() {
+		super(LocalDate.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.DATE;

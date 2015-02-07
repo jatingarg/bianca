@@ -7,6 +7,10 @@ import java.time.format.*;
 import com.github.yuthura.bianca.*;
 
 public class TimeType extends AbstractType<LocalTime> {
+	public TimeType() {
+		super(LocalTime.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.TIME;

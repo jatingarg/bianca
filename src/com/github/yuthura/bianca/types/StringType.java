@@ -5,6 +5,10 @@ import java.sql.*;
 import com.github.yuthura.bianca.*;
 
 public class StringType extends AbstractType<String> {
+	public StringType() {
+		super(String.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.VARCHAR;

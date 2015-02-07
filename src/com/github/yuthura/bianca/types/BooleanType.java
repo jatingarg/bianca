@@ -5,6 +5,10 @@ import java.sql.*;
 import com.github.yuthura.bianca.*;
 
 public class BooleanType extends AbstractType<Boolean> {
+	public BooleanType() {
+		super(Boolean.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.VARCHAR;

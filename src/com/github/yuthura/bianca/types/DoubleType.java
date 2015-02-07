@@ -5,6 +5,10 @@ import java.sql.*;
 import com.github.yuthura.bianca.*;
 
 public class DoubleType extends AbstractType<Double> {
+	public DoubleType() {
+		super(Double.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.DOUBLE;

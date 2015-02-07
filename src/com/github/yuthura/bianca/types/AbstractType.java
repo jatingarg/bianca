@@ -5,6 +5,18 @@ import java.sql.*;
 import com.github.yuthura.bianca.*;
 
 public abstract class AbstractType<T> implements Type<T> {
+	private final Class<T> typeClass;
+
+	public AbstractType(Class<T> typeClass) {
+		this.typeClass = typeClass;
+	}
+
+
+	@Override
+	public Class<T> getTypeClass() {
+		return typeClass;
+	}
+
 	@Override
 	public T coerce(Object object) throws CoercionException {
 		if(object == null) {

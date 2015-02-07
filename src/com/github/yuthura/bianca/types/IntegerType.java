@@ -5,6 +5,10 @@ import java.sql.*;
 import com.github.yuthura.bianca.*;
 
 public class IntegerType extends AbstractType<Integer> {
+	public IntegerType() {
+		super(Integer.class);
+	}
+
 	@Override
 	public int getRawSQLType() {
 		return Types.INTEGER;
