@@ -1,11 +1,9 @@
 package com.github.yuthura.bianca;
 
-import java.sql.*;
 import java.util.*;
 import java.util.function.*;
 
 import com.github.yuthura.bianca.functions.*;
-import com.mysql.jdbc.log.Log;
 
 public class PaginatedSelect extends Select {
 	private int page = 1;
