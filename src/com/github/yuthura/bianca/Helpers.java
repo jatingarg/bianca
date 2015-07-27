@@ -125,4 +125,8 @@ public class Helpers {
 	public static If ifElse(Object condition, Object ifTrue, Object ifFalse) {
 		return new If(condition, ifTrue, ifFalse);
 	}
+
+	public static Abs abs(Object object) {
+		return new Abs(object);
+	}
 }
