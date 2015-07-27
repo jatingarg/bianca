@@ -19,6 +19,16 @@
 
 - Refactored implementation of queries; impl.* package is no longer available, nor is support for OO building of queries (e.g. `select.setWhere(new Where())`)
 - Added `now` function
-- Insert queries now return the generated keys of the type specified (or default to integers)
+- Insert queries are now able to return the generated keys of the type specified, as well as simply inserted row count
 - Added experimental support for simplified paginated select queries
-- Added support for transactions
+- Added support for transactions (#6)
+- Added support to make any class a partial by implementing the `Partiable` interface (#14)
+- Added support for distinct select (#13)
+- Added `month` function
+- Added `abs` function
+- Added `if` function
+- Added `add` function (+)
+- Added `sub` function (-)
+- Added `mul` operation (*)
+- Added `div` operation (/)
+- Added `mod` operation (%)
