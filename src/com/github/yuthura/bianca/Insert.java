@@ -64,16 +64,24 @@ public class Insert implements Query {
 
 
 
-	public Integer[] run(ConnectionFactory connectionFactory) {
-		return run(connectionFactory, Type.INTEGER);
-	}
+	public int run(ConnectionFactory connectionFactory) {
+		StringBuilder sql = new StringBuilder();
+		buildStatement(sql);
 
-	public <T> T[] run(ConnectionFactory connectionFactory, Type<T> generatedKeys) {
-		return runQuery(connectionFactory, generatedKeys);
+		Query.log(sql);
+
+		try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql.toString()); ) {
+			prepareStatement(statement, 1);
+			int count = statement.executeUpdate();
+
+			return count;
+		} catch(SQLException x) {
+			throw new QueryException(x);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> T[] runQuery(ConnectionFactory connectionFactory, Type<T> generatedKeys) {
+	public <T> T[] run(ConnectionFactory connectionFactory, Type<T> generatedKeys) {
 		StringBuilder sql = new StringBuilder();
 		buildStatement(sql);
 
