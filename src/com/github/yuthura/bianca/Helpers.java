@@ -110,6 +110,10 @@ public class Helpers {
 		return new Year(object);
 	}
 
+	public static Month month(Object object) {
+		return new Month(object);
+	}
+
 	public static Count count(Object object) {
 		return new Count(object);
 	}
