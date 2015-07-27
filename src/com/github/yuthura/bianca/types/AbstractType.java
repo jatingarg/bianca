@@ -38,10 +38,11 @@ public abstract class AbstractType<T> implements Type<T> {
 
 	@Override
 	public void set(Object value, PreparedStatement statement, int index) throws SQLException {
-		if(value == null) {
+		T v = coerce(value);
+		if(v == null) {
 			statement.setNull(index, getRawSQLType());
 		} else {
-			setNonNull(coerce(value), statement, index);
+			setNonNull(v, statement, index);
 		}
 	}
 
