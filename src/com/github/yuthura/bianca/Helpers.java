@@ -2,6 +2,7 @@ package com.github.yuthura.bianca;
 
 import com.github.yuthura.bianca.conditions.*;
 import com.github.yuthura.bianca.functions.*;
+import com.github.yuthura.bianca.operations.*;
 
 public class Helpers {
 	public static Select select(Selectable... selection) {
@@ -128,5 +129,25 @@ public class Helpers {
 
 	public static Abs abs(Object object) {
 		return new Abs(object);
+	}
+
+	public static Add add(Object left, Object right) {
+		return new Add(left, right);
+	}
+
+	public static Subtract sub(Object left, Object right) {
+		return new Subtract(left, right);
+	}
+
+	public static Multiply mul(Object left, Object right) {
+		return new Multiply(left, right);
+	}
+
+	public static Divide div(Object left, Object right) {
+		return new Divide(left, right);
+	}
+
+	public static Modulo mod(Object left, Object right) {
+		return new Modulo(left, right);
 	}
 }
