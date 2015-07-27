@@ -121,4 +121,8 @@ public class Helpers {
 	public static Now now() {
 		return new Now();
 	}
+
+	public static If ifElse(Object condition, Object ifTrue, Object ifFalse) {
+		return new If(condition, ifTrue, ifFalse);
+	}
 }
