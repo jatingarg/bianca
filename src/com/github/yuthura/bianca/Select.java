@@ -45,6 +45,8 @@ public class Select implements Query, Partial {
 
 	private GroupBy groupBy;
 
+	private Having having;
+
 	private OrderBy orderBy;
 
 	private Limit limit;
@@ -71,6 +73,7 @@ public class Select implements Query, Partial {
 		joins.addAll(select.joins);
 		where = select.where;
 		groupBy = select.groupBy;
+		having = select.having;
 		orderBy = select.orderBy;
 		limit = select.limit;
 	}
@@ -243,6 +246,17 @@ public class Select implements Query, Partial {
 
 		return this;
 	}
+
+
+	public Select having(Condition... conditions) {
+		if(having == null) {
+			having = new Having();
+		}
+
+		having.addConditions(conditions);
+		return this;
+	}
+
 
 	/**
 	 * Adds an ORDER BY clause with the given {@link Partial} in the given {@link OrderBy.Direction} if called
@@ -545,6 +559,10 @@ public class Select implements Query, Partial {
 			groupBy.buildStatement(sb);
 		}
 
+		if(having != null) {
+			having.buildStatement(sb);
+		}
+
 		if(orderBy != null) {
 			orderBy.buildStatement(sb);
 		}
@@ -574,6 +592,10 @@ public class Select implements Query, Partial {
 
 		if(groupBy != null) {
 			i += groupBy.prepareStatement(statement, index + i);
+		}
+
+		if(having != null) {
+			i += having.prepareStatement(statement, index + i);
 		}
 
 		if(orderBy != null) {
