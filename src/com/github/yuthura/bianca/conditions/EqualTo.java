@@ -11,8 +11,8 @@ public class EqualTo extends BinaryCondition {
 
 	@Override
 	public void buildStatement(StringBuilder sb, Partial left, Partial right) {
-		boolean lNull = Partial.NULL.equals(left);
-		boolean rNull = Partial.NULL.equals(right);
+		boolean lNull = left == null || Partial.NULL.equals(left);
+		boolean rNull = right == null || Partial.NULL.equals(right);
 
 		if(!lNull && !rNull) {
 			left.buildStatement(sb);
