@@ -49,6 +49,8 @@ public class Select implements Query, Partial {
 
 	private Limit limit;
 
+	private boolean distinct = false;
+
 
 	/**
 	 * Constructs a new SELECT query without configuration; unusable until further configured
@@ -116,6 +118,22 @@ public class Select implements Query, Partial {
 
 		return this;
 	}
+
+
+	public Select distinct(Selectable... selection) {
+		distinct(true);
+		return select(selection);
+	}
+
+	public Select distinct() {
+		return distinct(true);
+	}
+
+	public Select distinct(boolean distinct) {
+		this.distinct = distinct;
+		return this;
+	}
+
 
 
 
@@ -257,7 +275,7 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * Alias for <code>orderBy(partial, OrderBy.Direction.ASCENDING).
+	 * Alias for <code>orderBy(partial, OrderBy.Direction.ASCENDING)</code>.
 	 *
 	 * @param partial the partial to order by
 	 * @return this
@@ -267,7 +285,7 @@ public class Select implements Query, Partial {
 	}
 
 	/**
-	 * Alias for <code>orderBy(partial, OrderBy.Direction.DESCENDING).
+	 * Alias for <code>orderBy(partial, OrderBy.Direction.DESCENDING)</code>.
 	 *
 	 * @param partial the partial to order by
 	 * @return this
@@ -495,6 +513,10 @@ public class Select implements Query, Partial {
 		}
 
 		sb.append("SELECT ");
+
+		if(distinct) {
+			sb.append("DISTINCT ");
+		}
 
 		List<Selectable> selection = this.selection;
 		if(selection.isEmpty()) {
