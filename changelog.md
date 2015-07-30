@@ -33,3 +33,6 @@
 - Added `mul` operation (*)
 - Added `div` operation (/)
 - Added `mod` operation (%)
+- Added `avg` function (#10)
+- Added `min` function (#10)
+- Added `max` function (#10)
