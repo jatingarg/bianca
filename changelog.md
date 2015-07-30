@@ -24,6 +24,7 @@
 - Added support for transactions (#6)
 - Added support to make any class a partial by implementing the `Partiable` interface (#14)
 - Added support for distinct select (#13)
+- Added support for distinct count (#12)
 - Added `month` function
 - Added `abs` function
 - Added `if` function
