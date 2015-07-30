@@ -101,6 +101,14 @@ public class Helpers {
 		return notIn(left, right);
 	}
 
+	public static Between between(Object left, Object right) {
+		return new Between(left, right);
+	}
+
+	public static NotBetween notBetween(Object left, Object right) {
+		return new NotBetween(left, right);
+	}
+
 
 
 	public static Sum sum(Object object) {
