@@ -127,6 +127,14 @@ public class Helpers {
 		return new Count(object);
 	}
 
+	public static Count count(Object object, boolean distinct) {
+		return (Count)new Count(object).distinct(distinct);
+	}
+
+	public static Count countDistinct(Object object) {
+		return count(object, true);
+	}
+
 	public static Now now() {
 		return new Now();
 	}
