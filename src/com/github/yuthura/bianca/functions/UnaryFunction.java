@@ -16,6 +16,10 @@ public class UnaryFunction implements Selectable, Aliasable {
 		this.argument = Partial.wrap(argument);
 	}
 
+	protected String getOperator() {
+		return operator;
+	}
+
 	protected Partial getArgument() {
 		return argument;
 	}
@@ -29,7 +33,7 @@ public class UnaryFunction implements Selectable, Aliasable {
 
 	@Override
 	public void buildStatement(StringBuilder sb) {
-		sb.append(operator);
+		sb.append(getOperator());
 		sb.append("(");
 		getArgument().buildStatement(sb);
 		sb.append(")");
