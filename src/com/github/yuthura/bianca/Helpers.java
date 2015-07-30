@@ -166,4 +166,18 @@ public class Helpers {
 	public static Modulo mod(Object left, Object right) {
 		return new Modulo(left, right);
 	}
+
+
+
+	public static Average avg(Object object) {
+		return new Average(object);
+	}
+
+	public static Minimum min(Object object) {
+		return new Minimum(object);
+	}
+
+	public static Maximum max(Object object) {
+		return new Maximum(object);
+	}
 }
